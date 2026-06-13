@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'ulubione.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'postacieInfo.dart';
@@ -87,6 +89,13 @@ class _PostacieScreenState extends State<PostacieScreen> {
                         ),
                         title: Text(imie, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                         subtitle: Text("Dom: $dom  |  ${zyje ? 'Żyje' : 'Nie żyje'}", style: const TextStyle(color: Colors.white70)),
+                        trailing: Consumer<UlubioneModel>(builder: (context, fav, _) {
+                          final isFav = fav.czyUlubionaPostac(imie);
+                          return IconButton(
+                            icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: Colors.white),
+                            onPressed: () => fav.przelaczUlubionaPostac(postac),
+                          );
+                        }),
                         onTap: () {
                           Navigator.push(
                             context,

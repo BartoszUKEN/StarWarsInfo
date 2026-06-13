@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'zakleciaInfo.dart';
+import 'ulubione.dart';
 
 class ZakleciaScreen extends StatefulWidget {
   const ZakleciaScreen({super.key});
@@ -75,6 +77,13 @@ class _ZakleciaScreenState extends State<ZakleciaScreen> {
                           czar['name'],
                           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         ),
+                        trailing: Consumer<UlubioneModel>(builder: (context, fav, _) {
+                          final isFav = fav.czyUlubioneZaklecie(czar['name']);
+                          return IconButton(
+                            icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: Colors.white),
+                            onPressed: () => fav.przelaczUlubioneZaklecie(czar),
+                          );
+                        }),
                         onTap: () {
                           Navigator.push(
                             context,

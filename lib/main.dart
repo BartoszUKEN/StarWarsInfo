@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'postacie.dart';
 import 'zaklecia.dart';
+import 'ulubione.dart';
+import 'ulubione_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(ChangeNotifierProvider(create: (_) => UlubioneModel(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -90,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(height: 15),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(onPressed: () {}, child: const Text("Ulubione")),
+                    child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const UlubioneScreen())), child: const Text("Ulubione")),
                   ),
                 ],
               ),

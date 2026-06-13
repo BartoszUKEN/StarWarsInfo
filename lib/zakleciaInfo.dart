@@ -29,11 +29,9 @@ class ZakleciaInfoScreen extends StatelessWidget {
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
-              // Używamy SizedBox z double.infinity, żeby Column zajęła całą szerokość
               child: SizedBox(
                 width: double.infinity,
                 child: Column(
-                  // Wyśrodkowanie w poziomie
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 20),
