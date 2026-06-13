@@ -81,7 +81,7 @@ class _ZakleciaScreenState extends State<ZakleciaScreen> {
                           final isFav = fav.czyUlubioneZaklecie(czar['name']);
                           return IconButton(
                             icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: Colors.white),
-                            onPressed: () => fav.przelaczUlubioneZaklecie(czar),
+                            onPressed: () async => await fav.przelaczUlubioneZaklecie(czar),
                           );
                         }),
                         onTap: () {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'ustawienia.dart';
 
 class ZakleciaInfoScreen extends StatelessWidget {
   final Map zaklecie;
@@ -37,27 +39,32 @@ class ZakleciaInfoScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     const Icon(Icons.auto_fix_high, size: 80, color: Colors.white),
                     const SizedBox(height: 20),
-                    Card(
-                      color: Colors.white.withAlpha(204),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Opis zaklęcia",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                            const SizedBox(height: 15),
-                            Text(
-                              zaklecie['description'] ?? 'Brak opisu dla tego zaklęcia.',
-                              style: const TextStyle(fontSize: 16),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                    Consumer<UstawieniaModel>(builder: (context, ustaw, _) {
+                      final cardColor = ustaw.ciemnyTryb ? Colors.grey[800] : Colors.white.withAlpha(204);
+                      final textColor = ustaw.ciemnyTryb ? Colors.white : Colors.black;
+                      final subtitleColor = ustaw.ciemnyTryb ? Colors.white70 : Colors.black54;
+                      return Card(
+                        color: cardColor,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Opis zaklęcia",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: textColor),
+                              ),
+                              const SizedBox(height: 15),
+                              Text(
+                                zaklecie['description'] ?? 'Brak opisu dla tego zaklęcia.',
+                                style: TextStyle(fontSize: 16, color: subtitleColor),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 ),
               ),

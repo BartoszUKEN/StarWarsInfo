@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'ustawienia.dart';
 
 class PostacieInfoScreen extends StatelessWidget {
   final Map postac;
@@ -92,18 +94,26 @@ class PostacieInfoScreen extends StatelessWidget {
   }
 
   Widget _buildInfoCard(List<Widget> children) {
-    return Card(
-      color: Colors.white.withAlpha(204),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Column(children: children),
-    );
+    return Consumer<UstawieniaModel>(builder: (context, ustaw, _) {
+      final cardColor = ustaw.ciemnyTryb ? Colors.grey[800] : Colors.white.withAlpha(204);
+      return Card(
+        color: cardColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Column(children: children),
+      );
+    });
   }
 
   Widget _buildListTile(IconData icon, String title, String subtitle) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.black87),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(subtitle),
-    );
+    return Consumer<UstawieniaModel>(builder: (context, ustaw, _) {
+      final iconColor = ustaw.ciemnyTryb ? Colors.white70 : Colors.black87;
+      final titleColor = ustaw.ciemnyTryb ? Colors.white : Colors.black87;
+      final subtitleColor = ustaw.ciemnyTryb ? Colors.white70 : Colors.black54;
+      return ListTile(
+        leading: Icon(icon, color: iconColor),
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: titleColor)),
+        subtitle: Text(subtitle, style: TextStyle(color: subtitleColor)),
+      );
+    });
   }
 }

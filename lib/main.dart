@@ -6,10 +6,18 @@ import 'postacie.dart';
 import 'zaklecia.dart';
 import 'ulubione.dart';
 import 'ulubione_screen.dart';
+import 'ustawienia.dart';
+import 'ustawienia_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(ChangeNotifierProvider(create: (_) => UlubioneModel(), child: const MyApp()));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => UlubioneModel()),
+      ChangeNotifierProvider(create: (_) => UstawieniaModel()),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -17,8 +25,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePage(),
+    final ustawienia = Provider.of<UstawieniaModel>(context);
+    final theme = ustawienia.ciemnyTryb
+        ? ThemeData.dark().copyWith(
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[800],
+                foregroundColor: Colors.white,
+              ),
+            ),
+          )
+        : ThemeData.light();
+
+    return MaterialApp(
+      theme: theme,
+      home: const HomePage(),
     );
   }
 }
@@ -60,7 +81,15 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text("Harry Potter Informacje", style: TextStyle(color: Colors.white)),
-        actions: [IconButton(icon: const Icon(Icons.settings, color: Colors.white), onPressed: () {})],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => UstawieniaScreen(onRefresh: _loadStats)),
+            ),
+          )
+        ],
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -119,17 +148,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildStatCard(String label, int count) {
-    return Card(
-      color: Colors.white.withAlpha(204),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            Text(label),
-            Text(count == 0 ? "..." : "$count", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-          ],
+    return Consumer<UstawieniaModel>(builder: (context, ustaw, _) {
+      final cardColor = ustaw.ciemnyTryb ? Colors.grey[800] : Colors.white.withAlpha(204);
+      final textColor = ustaw.ciemnyTryb ? Colors.white : Colors.black;
+      return Card(
+        color: cardColor,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: [
+              Text(label, style: TextStyle(color: textColor)),
+              Text(count == 0 ? "..." : "$count", style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 20)),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

@@ -93,7 +93,7 @@ class _PostacieScreenState extends State<PostacieScreen> {
                           final isFav = fav.czyUlubionaPostac(imie);
                           return IconButton(
                             icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: Colors.white),
-                            onPressed: () => fav.przelaczUlubionaPostac(postac),
+                            onPressed: () async => await fav.przelaczUlubionaPostac(postac),
                           );
                         }),
                         onTap: () {

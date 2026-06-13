@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'ulubione.dart';
+import 'ustawienia.dart';
 import 'postacieInfo.dart';
 import 'zakleciaInfo.dart';
 
@@ -39,37 +40,49 @@ class UlubioneScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                           if (fav.ulubionePostacie.isEmpty)
                             const Center(child: Text('Brak ulubionych postaci', style: TextStyle(color: Colors.white70))),
-                          ...fav.ulubionePostacie.map((c) => SizedBox(
-                          width: double.infinity,
-                          child: Card(
-                            child: ListTile(
-                                    title: Center(child: Text(c['name'] ?? '')),
-                                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PostacieInfoScreen(postac: c))),
-                                    trailing: IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () => fav.przelaczUlubionaPostac(c),
-                                    ),
-                            ),
+                          ...fav.ulubionePostacie.map((c) => Consumer<UstawieniaModel>(builder: (context, ustaw, _) {
+                      final cardColor = ustaw.ciemnyTryb ? Colors.grey[800] : Colors.white.withAlpha(204);
+                      final textColor = ustaw.ciemnyTryb ? Colors.white : Colors.black;
+                      final iconColor = ustaw.ciemnyTryb ? Colors.white70 : Colors.black54;
+                      return SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          color: cardColor,
+                          child: ListTile(
+                                  title: Text(c['name'] ?? '', style: TextStyle(color: textColor)),
+                                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PostacieInfoScreen(postac: c))),
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.delete, color: iconColor),
+                                    onPressed: () async => await fav.przelaczUlubionaPostac(c),
+                                  ),
                           ),
-                        )),
+                        ),
+                      );
+                    })),
                     const SizedBox(height: 16),
                     Center(child: const Text('Zaklęcia', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white))),
                     const SizedBox(height: 8),
                     if (fav.ulubioneZaklecia.isEmpty)
                       const Center(child: Text('Brak ulubionych zaklęć', style: TextStyle(color: Colors.white70))),
-                    ...fav.ulubioneZaklecia.map((s) => SizedBox(
-                          width: double.infinity,
-                          child: Card(
-                            child: ListTile(
-                              title: Center(child: Text(s['name'] ?? '')),
-                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ZakleciaInfoScreen(zaklecie: s))),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () => fav.przelaczUlubioneZaklecie(s),
-                              ),
+                    ...fav.ulubioneZaklecia.map((s) => Consumer<UstawieniaModel>(builder: (context, ustaw, _) {
+                      final cardColor = ustaw.ciemnyTryb ? Colors.grey[800] : Colors.white.withAlpha(204);
+                      final textColor = ustaw.ciemnyTryb ? Colors.white : Colors.black;
+                      final iconColor = ustaw.ciemnyTryb ? Colors.white70 : Colors.black54;
+                      return SizedBox(
+                        width: double.infinity,
+                        child: Card(
+                          color: cardColor,
+                          child: ListTile(
+                            title: Text(s['name'] ?? '', style: TextStyle(color: textColor)),
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ZakleciaInfoScreen(zaklecie: s))),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete, color: iconColor),
+                              onPressed: () async => await fav.przelaczUlubioneZaklecie(s),
                             ),
                           ),
-                        )),
+                        ),
+                      );
+                    })),
                   ],
                 ),
               );
