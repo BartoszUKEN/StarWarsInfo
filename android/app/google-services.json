@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "857811982828",
+    "project_id": "harry-potter-info-49281",
+    "storage_bucket": "harry-potter-info-49281.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857811982828:android:472b0f67cb4b2a377b08c9",
+        "android_client_info": {
+          "package_name": "com.aplikacja.harrypotterinfo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIVs4-oOccLFySTPWdF5qVvXieVM2PO50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

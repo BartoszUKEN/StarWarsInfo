@@ -2,15 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
+import 'baza_danych.dart';
 import 'postacie.dart';
 import 'zaklecia.dart';
 import 'ulubione.dart';
 import 'ulubione_screen.dart';
 import 'ustawienia.dart';
 import 'ustawienia_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  try {
+    await Firebase.initializeApp();
+
+    FlutterError.onError = (errorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    };
+    
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+
+    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+  } catch (e) {
+    debugPrint("$e");
+  }
+
+  final db = BazaDanych();
+  await db.init();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => UlubioneModel()),
@@ -38,6 +64,7 @@ class MyApp extends StatelessWidget {
         : ThemeData.light();
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: theme,
       home: const HomePage(),
     );
@@ -62,14 +89,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadStats() async {
-    final postacieOdpowiedz = await http.get(Uri.parse('https://hp-api.onrender.com/api/characters'));
-    final zakleciaOdpowiedz = await http.get(Uri.parse('https://hp-api.onrender.com/api/spells'));
+    try {
+      final postacieOdpowiedz = await http.get(Uri.parse('https://hp-api.onrender.com/api/characters'));
+      final zakleciaOdpowiedz = await http.get(Uri.parse('https://hp-api.onrender.com/api/spells'));
 
-    if (postacieOdpowiedz.statusCode == 200 && zakleciaOdpowiedz.statusCode == 200) {
-      setState(() {
-        licznikPostaci = json.decode(postacieOdpowiedz.body).length;
-        licznikZaklec = json.decode(zakleciaOdpowiedz.body).length;
-      });
+      if (postacieOdpowiedz.statusCode == 200 && zakleciaOdpowiedz.statusCode == 200) {
+        if (!mounted) return;
+        setState(() {
+          licznikPostaci = json.decode(postacieOdpowiedz.body).length;
+          licznikZaklec = json.decode(zakleciaOdpowiedz.body).length;
+        });
+      }
+    } catch (e) {
+      debugPrint("$e");
     }
   }
 
@@ -115,15 +147,37 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Row(
                     children: [
-                      Expanded(child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PostacieScreen())), child: const Text("Postacie"))),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            FirebaseAnalytics.instance.logEvent(name: 'otwarcie_ekranu_postaci');
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => const PostacieScreen()));
+                          }, 
+                          child: const Text("Postacie")
+                        )
+                      ),
                       const SizedBox(width: 15),
-                      Expanded(child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ZakleciaScreen())), child: const Text("Zaklęcia"))),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            FirebaseAnalytics.instance.logEvent(name: 'otwarcie_ekranu_zaklecia');
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => const ZakleciaScreen()));
+                          }, 
+                          child: const Text("Zaklęcia")
+                        )
+                      ),
                     ],
                   ),
                   const SizedBox(height: 15),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const UlubioneScreen())), child: const Text("Ulubione")),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        FirebaseAnalytics.instance.logEvent(name: 'otwarcie_ekranu_ulubione');
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const UlubioneScreen()));
+                      }, 
+                      child: const Text("Ulubione")
+                    ),
                   ),
                 ],
               ),

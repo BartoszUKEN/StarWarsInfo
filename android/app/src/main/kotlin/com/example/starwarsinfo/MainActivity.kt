@@ -1,4 +1,4 @@
-package com.example.starwarsinfo
+package com.aplikacja.harrypotterinfo
 
 import io.flutter.embedding.android.FlutterActivity
 
